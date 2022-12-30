@@ -108,12 +108,15 @@ void show_all(void) {
 
   // Créez une variable pour stocker chaque ligne lue dans le fichier
   char line[100];
-
+int main();
   struct stat st;
   stat("products.txt", &st); 
   if (st.st_size == 0){
     printf("Your Stock is Empty!");
-    exit(1);}
+    main();
+    }
+  printf("\n\t\t            ***ALL EXISTING PRODUCTS***\n");
+  printf("\t\t  ================================================\n");    
   
   // Utilisez fgets() pour lire chaque ligne du fichier
   while (fgets(line, 100, fp) != NULL) {
@@ -121,12 +124,7 @@ void show_all(void) {
     int s;
     char *product_name = strtok(line, ",");
     // Si le nom du produit correspond à celui recherché, affichez les informations
-    
-        printf("\n\t\t            ***ALL EXISTING PRODUCTS***\n");
-        printf("\t\t  ================================================\n");
-        printf("\t\t                       NAME                         \n");
-        printf("\t\t  ================================================\n");
-        printf("\t\t                       %-10s\n",product_name);
+        printf("\t\t                    NAME : %-10s\n",product_name);
         printf("\t\t  ================================================\n");
         
 
@@ -275,11 +273,12 @@ void display_product(char name[100]) {
 
   // Créez une variable pour stocker chaque ligne lue dans le fichier
   char line[100];
-
+  int test_exist=0;
+  int test_not_empty=0;
   // Utilisez fgets() pour lire chaque ligne du fichier
   while (fgets(line, 100, fp) != NULL) {
+    test_not_empty=1;
     // Séparez les informations sur le produit en utilisant strtok()
-    int s;
     char *product_name = strtok(line, ",");
     char *quantity_str = strtok(NULL, ",");
     char *price_str = strtok(NULL, ",");
@@ -293,20 +292,19 @@ void display_product(char name[100]) {
         printf("\t\t  ================================================\n");
         printf("\t\t          PRICE        ||     %s\n",price_str);
         printf("\t\t  ================================================");
-
-
-	  /*printf("Product: %s\n",product_name);
-      printf("Quantity: %s\n",quantity_str);
-      printf("Price: %s\n",price_str);*/
+        test_exist=1;
       
     }
-    else {
-    
-    printf("\n\t\t            the product doesn't exist\n");
-    system("pause");
 
+  }
+  if (test_not_empty==0){
+    printf("\n\t\t                the file is empty\n");}
+  else {
+    if (test_exist==0){
+      printf("\n\t\t            the product doesn't exist\n");
     }
   }
+
 
   // Fermez le fichier
   fclose(fp);
@@ -560,10 +558,13 @@ int main() {
             break;
         case 7:
             // Quitter l'application
-            return 0;
+            /*return 0;*/
+            exit(1);
         default:
             printf("Invalid choice!\n");
             break;
         }
     }
+    
+
 }
