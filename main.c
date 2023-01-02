@@ -20,7 +20,8 @@ struct date {
   int y;
 };
 
-int day()
+
+int day(void)
 {   int res;
     time_t s, val = 1;
     struct tm* current_time;
@@ -96,22 +97,16 @@ struct date get_date() {
 
 
 void show_all(void) {
-    /*#define bool unsigned int;
-    #define true 1;
-    #define false 0;*/
+
   // Ouvrez le fichier en mode "lecture"
   FILE *fp = fopen("products.txt", "r");
-  if (fp == NULL) {
-    printf("Error opening file!\n");
-    exit(1);
-  }
-
+  
   // Créez une variable pour stocker chaque ligne lue dans le fichier
   char line[100];
-int main();
+  int main();
   struct stat st;
   stat("products.txt", &st); 
-  if (st.st_size == 0){
+  if ((st.st_size == 0) || (fp == NULL)){
     printf("Your Stock is Empty!");
     main();
     }
@@ -126,14 +121,6 @@ int main();
     // Si le nom du produit correspond à celui recherché, affichez les informations
         printf("\t\t                    NAME : %-10s\n",product_name);
         printf("\t\t  ================================================\n");
-        
-
-
-	  /*printf("Product: %s\n",product_name);
-      printf("Quantity: %s\n",quantity_str);
-      printf("Price: %s\n",price_str);*/
-      
-    
 
   }
   
@@ -143,7 +130,7 @@ int main();
 
 
 void addH(char name[],char descrip[], int quan,char d[], char m[],int y ){
-    
+    //ajouter a archives de histories d'entres et de sorties
     char destination[100] ;
     char destination2[100] ;
     char file_name[256];
@@ -151,13 +138,13 @@ void addH(char name[],char descrip[], int quan,char d[], char m[],int y ){
     
     DIR *dir;
     FILE *file;
-
+    //creation de dossier archives si n'existe pas
     dir = opendir("./ARCHIVES");
     if (dir == NULL) {
         mkdir("./ARCHIVES");
     }
 
-
+    //creation de directory path selon l'annee , le mois et le jour
     sprintf(destination, "./ARCHIVES/%d",y);
     dir = opendir(destination);
     if (dir == NULL) {
@@ -175,7 +162,7 @@ void addH(char name[],char descrip[], int quan,char d[], char m[],int y ){
     sprintf(file_name, "%s/%s.txt", destination2,d);
     file = fopen(file_name, "a");
     
-    sprintf(info, "%s~~~~%s~~~~%d", name,descrip,quan);
+    sprintf(info, "THE PRODUCT :%s  %s IN %s/%s/%d", name,descrip,d,m,y);
     fprintf(file,"%s\n",info);
 
     fclose(file);
@@ -185,9 +172,9 @@ void addH(char name[],char descrip[], int quan,char d[], char m[],int y ){
 
 
 void add_product(struct Product p1) {
+    
     struct Product p;
     p = (struct Product) p1;
-
 
     // Ouvrez le fichier en mode "append" pour ajouter des données à la fin du fichier
     FILE *fp;
@@ -206,7 +193,7 @@ void add_product(struct Product p1) {
     //Enregistrer l'operation dans historique
     struct date dt = get_date();
 
-    addH(p.name,"Added to the stock",p.quantity,dt.d,dt.m,dt.y);
+    addH(p.name,"ADDED TO THE STOCK",p.quantity,dt.d,dt.m,dt.y);
 }
 
 
@@ -235,11 +222,13 @@ void delete_product(char name[100]) {
     while (fgets(line, 100, fp) != NULL) {
         // Séparez les informations sur le produit en utilisant strtok()
         char *product_name = strtok(line, ",");
+        char *quantity_str = strtok(NULL, ",");
+        char *price_str = strtok(NULL, ",");
 
+    
         // Si le nom du produit ne correspond pas à celui à supprimer, écrivez la ligne dans le fichier temporaire
         if (strcmp(product_name, name) != 0) {
-            
-            fprintf(temp_fp, "%s", line);
+            fprintf(temp_fp, "%s,%s,%s", product_name, quantity_str, price_str);
         }
     }
 
@@ -248,22 +237,21 @@ void delete_product(char name[100]) {
     fclose(temp_fp);
 
     // Supprimez le fichier original
-    remove("products.txt");
+    remove("./products.txt");
 
     // Renommez le fichier temporaire en "products.txt"
-    rename("temp.txt", "products.txt");
+    rename("./temp.txt", "./products.txt");
 
     //Enregistrer l'operation dans historique
     struct date dt = get_date();
 
-    addH(name,"Deleted from the stock",0,dt.d,dt.m,dt.y);
+    addH(name,"DELETED FROM THE STOCK",0,dt.d,dt.m,dt.y);
 }
 
 
+
 void display_product(char name[100]) {
-    /*#define bool unsigned int;
-    #define true 1;
-    #define false 0;*/
+
   // Ouvrez le fichier en mode "lecture"
   FILE *fp = fopen("products.txt", "r");
   if (fp == NULL) {
@@ -311,7 +299,7 @@ void display_product(char name[100]) {
 }
 
 
-struct Product search_product(char *name) {
+struct Product search_product(char name[100]) {
   // Ouvrez le fichier en mode "lecture"
   FILE *fp = fopen("products.txt", "r");
   if (fp == NULL) {
@@ -322,6 +310,7 @@ struct Product search_product(char *name) {
   // Créez une variable de type Product pour stocker les informations sur le produit
   struct Product p;
   p.name[0] = '\0';
+  //p.name= '\0';
   p.quantity = 0;
   p.price = 0.0;
 
@@ -341,18 +330,16 @@ struct Product search_product(char *name) {
       p.quantity = atoi(quantity_str);
       p.price = atof(price_str);
       break;
-    }
-    
-
+    } 
+  }
   // Fermez le fichier
   fclose(fp);
-
   return p;
-}}
+}
 
 
-int direc(const char *dest)
-{
+int direc(const char *dest){
+  //pour afficher les element du directory/dossier
 	struct dirent *de; 
 	DIR *dr; 
     dr= opendir(dest);
@@ -368,12 +355,12 @@ int direc(const char *dest)
             }
 			printf("%s\n", de->d_name);}
 	closedir(dr);
-    return 0;
+  return 0;
 }
 
 
 void seeH(void){
-    
+    //pour etre capable de voir l'historie de notre entres et sorties
     char destination[100] ;
     char destination2[100] ;
     char file_name[256];
@@ -383,20 +370,23 @@ void seeH(void){
     int y;
     
     FILE *file;
-
+    printf("\n***ALL EXISTING YEARS***");
     direc("./ARCHIVES");
-    printf("Enter the year: ");   
+    printf("Enter the year : ");   
     scanf("%d", &y);
     sprintf(destination, "./ARCHIVES/%d",y);
-    
+
+    printf("\n***ALL EXISTING MONTHS***");
     direc(destination);
-    printf("Enter the month: ");
+    printf("Enter the month : ");
     scanf("%s",&m);
     sprintf(destination2, "%s/%s",destination,m);
 
+    printf("\n***ALL EXISTING DAYS***");
     direc(destination2);
-    printf("Enter the day: ");
+    printf("Enter the day : ");
     scanf("%s",&d);
+    printf("\n");
     sprintf(file_name, "%s/%s.txt", destination2,d);
 
     file = fopen(file_name, "r");
@@ -405,12 +395,11 @@ void seeH(void){
       printf("%c", history);
 
     fclose(file);
-    /*system("pause");*/
-
 }
 
 
-void update_product(char *name, int new_quantity, float new_price) {
+
+void update_product(char name[100], int new_quantity, float new_price) {
   // Ouvrez le fichier en mode "lecture"
   FILE *fp = fopen("products.txt", "r");
   if (fp == NULL) {
@@ -419,13 +408,12 @@ void update_product(char *name, int new_quantity, float new_price) {
   }
 
   // Créez un fichier temporaire pour stocker les lignes mises à jour
-  FILE *temp_fp ;
-  temp_fp = fopen("temp.txt", "w");
+  FILE *temp_fp;
+  temp_fp=fopen("temp.txt", "a");
   if (temp_fp == NULL) {
     printf("Error creating temporary file!\n");
     exit(1);
   }
-
   // Créez une variable pour stocker chaque ligne lue dans le fichier
   char line[100];
 
@@ -435,26 +423,29 @@ void update_product(char *name, int new_quantity, float new_price) {
     char *product_name = strtok(line, ",");
     char *quantity_str = strtok(NULL, ",");
     char *price_str = strtok(NULL, ",");
-
     // Si le nom du produit correspond à celui à mettre à jour, utilisez les nouvelles informations
     if (strcmp(product_name, name) == 0) {
-      fprintf(temp_fp, "%s,%d,%.2f\n", name, new_quantity, new_price);
+      fprintf(temp_fp, "%s,%d,%f\n", name, new_quantity, new_price);
+      struct date dt = get_date();
+      addH(name,"UPDATED",quantity_str,dt.d,dt.m,dt.y);
     }
     else {
       // Sinon, écrivez la ligne dans le fichier temporaire sans modification
-      fprintf(temp_fp, "%s", line);
+      fprintf(temp_fp, "%s,%s,%s", product_name, quantity_str, price_str);
+
     }
   }
-
+ 
   // Fermez les fichiers
   fclose(fp);
   fclose(temp_fp);
 
   // Supprimez le fichier original
-  remove("products.txt");
+   remove("products.txt");
 
   // Renommez le fichier temporaire en "products.txt"
   rename("temp.txt", "products.txt");
+  
 }
 
 
@@ -527,30 +518,43 @@ int main() {
             scanf("%s", name);
             delete_product(name);
             break;
-        case 4:
+        case 4:;
             // Modifier un produit
+            int quantity4;
+            float price4;
+            char name4[100];
             show_all();
-            printf("Enter product name: ");
-            scanf("%s", name);
-            printf("Enter new quantity: ");
-            int quantit;
-            scanf("%d", &quantit);
-            printf("Enter new price: ");
-            float pric;
-            scanf("%f", &pric);
-            update_product(name, quantit, pric);
+            printf("\t\t   ENTER PRODUCT NAME  ||     ");            
+            scanf("%s", &name4);
+            display_product(name4);
+            printf("\n\t\t      NEW QUANTITY     ||     ");
+            scanf("%d", &quantity4);
+            printf("\t\t  ================================================\n");
+            printf("\t\t      NEW PRICE        ||     ");
+            scanf("%f", &price4);
+            printf("\t\t  ================================================\n");
+
+            update_product(name4, quantity4, price4);
             break;
-        case 5:
+        case 5:;
             // Rechercher un produit
-            printf("Enter product name: ");
-            scanf("%s", name);
+            char name5[100];
             struct Product p1 ;
-            p1=  search_product(name) ;
+
+            printf("Enter product name: ");
+            scanf("%s", &name5);
+            p1= search_product(name5) ;
             if(p1.quantity != 0){
-            printf("Product: %s\n", p.name);
-            printf("Quantity: %d\n", p.quantity);
-            printf("Price: %.2f\n", p.price);}
-            else printf("\n\t\t            the product doesn't exist\n");
+              printf("\n\t\t                ***THE PRODUCT EXISTS***\n");
+              printf("\t\t  ================================================\n");
+              printf("\t\t          NAME         ||   %s  \n",p1.name);
+              printf("\t\t  ================================================\n");
+              printf("\t\t          QUANTITY     ||   %d  \n",p1.quantity);
+              printf("\t\t  ================================================\n");
+              printf("\t\t          PRICE        ||   %f  \n",p1.price);
+              printf("\t\t  ================================================\n");
+            }
+            else printf("\n\t\t            THE PRODUCT DOESN'T EXIST\n");
             break;
         case 6:
             //Voir le historie d'entres et de sorties
@@ -561,10 +565,8 @@ int main() {
             /*return 0;*/
             exit(1);
         default:
-            printf("Invalid choice!\n");
+            printf("INVALID CHOICE!\n");
             break;
         }
     }
-    
-
 }
