@@ -1,3 +1,3 @@
 To use the Program you need the compile the main or use main.exe.
 
-NOTICE: any compiling error you can make a note at NOTE.txt and when attempting to use dividing function I got some issues so anyone got idea feel free to make a note or a pull request.
+NOTICE: any compiling error you can make a note at NOTE.txt.
