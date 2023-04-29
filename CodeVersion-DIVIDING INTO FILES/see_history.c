@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include "see_history.h"
 
 int direc(const char *dest)
 {

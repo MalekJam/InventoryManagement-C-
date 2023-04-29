@@ -3,12 +3,8 @@
 #include<string.h>
 #include<stdbool.h>
 #include <sys/stat.h>
-
-/*struct Product {
-  char name[100];
-  int quantity;
-  float price;
-};*/
+#include "date.h"
+#include "show_all.h"
 
 
 void show_all(void) {

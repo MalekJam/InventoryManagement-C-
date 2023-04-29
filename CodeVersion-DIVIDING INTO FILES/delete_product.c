@@ -3,7 +3,8 @@
 #include<string.h>
 #include<stdbool.h>
 
-#include "./ADDITIONAL/date.c"
+#include "./ADDITIONAL/date.h"
+#include "delete_product.h"
 
 
 void delete_product(char name[100]) {

@@ -1,10 +1,10 @@
-#include "add_product.c"
-#include "display_product.c"
-#include "see_history.c"
-#include "search_product.c"
-#include "update_product.c"
-#include "delete_product.c"
-#include "./ADDITIONAL/show_all.c"
+#include "add_product.h"
+#include "display_product.h"
+#include "see_history.h"
+#include "search_product.h"
+#include "update_product.h"
+#include "delete_product.h"
+#include "./ADDITIONAL/show_all.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 
-
+/*
 struct Product {
     char name[100];
     int quantity;
@@ -24,7 +24,7 @@ struct date {
   char m[256];
   int y;
 };
-
+*/
 
 int main() {
     printf("\n");

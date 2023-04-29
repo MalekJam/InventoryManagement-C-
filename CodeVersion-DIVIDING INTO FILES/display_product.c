@@ -3,12 +3,9 @@
 #include<string.h>
 #include<stdbool.h>
 
+#include "display_product.h"
 
-/*struct Product {
-  char name[100];
-  int quantity;
-  double price;
-};*/
+
 
 
 void display_product(char name[100]) {

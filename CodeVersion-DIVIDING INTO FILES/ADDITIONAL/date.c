@@ -1,19 +1,15 @@
-#include "day.c"
-#include "month.c"
-#include "year.c"
-
+#include "day.h"
+#include "month.h"
+#include "year.h"
+#include "date.h"
 #include <stdio.h>
 
-struct date {
-  char d[256];
-  char m[256];
-  int y;
-};
+
 
 struct date get_date() {
-  struct date dt;
-  sprintf(dt.d,"%d",jour());
-  switch (month())
+    struct date dt;
+    sprintf(dt.d,"%d",jour());
+    switch (month())
     {
     case 1:
         sprintf(dt.m,"%s","January");
